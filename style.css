@@ -1,0 +1,47 @@
+body{
+    background-color: #393431;
+    padding-top: 40px;
+    margin-bottom: 20px;
+}
+input[type='number']{
+    background-color: #6e655e;
+    color:white;
+    width: 50px;
+}
+input[type='range']{
+    width: 100px;
+    accent-color: #c86311;
+}
+
+.bottomAlign{
+    display: flex;
+    position:absolute;
+    bottom: 0;
+    align-items: flex-end;
+    height: fit-content;
+    padding-bottom: 20px;
+}
+#toolbar{
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    top: 0;
+    left: 0;
+    height: 40px;
+    background-color: #23201e;
+    width: 100vw;
+}
+.toolbarButton{
+    background-color:#c86311;
+    color:white;
+    height: max-content;
+    min-width: 100px;
+    max-width: fit-content;
+}
+.toolbarButton:hover{
+    background-color: #ae5c19;
+}
+.toolbarButton:active{
+    background-color: #7e481b;
+}

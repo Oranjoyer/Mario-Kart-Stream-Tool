@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<template pageName="Home" listPage="true">
+    <script src="scripts/home.js"></script>
+        <div id="activePlayers"></div>
+
+        <div class="colorMod bottomAlign">
+        <img src="colorPrev.jpg" id="colorModPreview">
+        <input type="number" id="hueRotationIn" value="20"></input><input type="range" id="hueRotationSlider" min="0" max="360" oninput="hueRotationIn.value=value"></input>
+        <input type="number" id="saturationIn" value="20"></input><input type="range" id="saturationSlider" min="0" max="200" oninput="saturationIn.value=value"></input>
+        <input type="number" id="lightnessIn" value="20"></input><input type="range" id="lightnessSlider" min="0" max="200" oninput="lightnessIn.value=value"></input>
+        <input type="button" id="setColor" value="Set Color" onclick="">
+        </div>
+</template>
+</html>
