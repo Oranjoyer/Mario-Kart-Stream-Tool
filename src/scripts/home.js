@@ -4,7 +4,9 @@ var brightness = 100;
 var colorPrev;
 var hueRotationInput;
 
+console.log("Page")
 document.addEventListener("DOMContentLoaded",()=>{
+    console.log("PageIsHere")
     colorPrev = document.getElementById("colorModPreview")
     document.getElementById("hueRotationIn").addEventListener("change",()=>{hueRotate=document.getElementById("hueRotationIn").value;colorAdjustment(colorPrev,hueRotate,saturation,brightness)})
     document.getElementById("hueRotationSlider").addEventListener("change",()=>{hueRotate=document.getElementById("hueRotationSlider").value;colorAdjustment(colorPrev,hueRotate,saturation,brightness)})
@@ -17,10 +19,6 @@ document.addEventListener("DOMContentLoaded",()=>{
 
     
 })
-
-function setPlayerColor(){
-    
-}
 
 
 function colorAdjustment(imageElement,H,S,L)

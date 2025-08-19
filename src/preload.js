@@ -1,5 +1,5 @@
-const { contextBridge, contentTracing, ipcRenderer } = require('electron')
-const { promises } = require('original-fs')
+const { contextBridge, contentTracing, ipcRenderer } = require('electron/renderer')
+// const { promises } = require('original-fs')
 
 contextBridge.exposeInMainWorld('versions',{
     node: () => process.versions.node,

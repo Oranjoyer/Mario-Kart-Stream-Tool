@@ -12,17 +12,17 @@ function createWindow()
             preload: path.join(__dirname, 'preload.js')
         }
     })
-    win.setMenu(null)
+    // win.setMenu(Menu)
+    // win.setMenuBarVisibility(true)
+    win.webContents.openDevTools()
     win.loadFile("index.html")
 }
 
 
 app.whenReady().then(()=>{
-    ipcMain.on("log",(mess)=>{
-    console.log(mess);
-    console.log("hello")
-    })
+    ipcMain.on("log",(mess)=>{console.log("EEEEE\n"+mess)})
 
+    
     createWindow()
     pyInterface.init().then(()=>{
         console.log("Interface Started");
@@ -35,7 +35,7 @@ app.on("window-all-closed",()=>{
     pyInterface.shutdown()
 })
 process.on('SIGINT', function() {
-    app.exit()
     pyInterface.shutdown()
+    app.exit()
 });
 
