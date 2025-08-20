@@ -100,8 +100,9 @@ def loadPlayer(capture,playerFile):
     return player
 
 def createPlayer(name,capture=None):
+    # sendMessage("Info",[name,capture])
     if(type(capture)!= ffmpegCapture.VideoCap):
-        capture=ffmpegCapture.capFromId(capture)
+        capture=ffmpegCapture.capFromId(int(capture))
     player = Player(name,capture)
     PLAYERS[player.id] = player
     if(capture):
@@ -149,7 +150,7 @@ def createCapture(camera,width:int=1280,height:int=720,framerate:int=60,port=Non
     if(camera.method != cameraSystem.FILE and camera not in [camFromId(c["id"]) for c in getOpenCams()]):
         return
     if(camera):
-        return ffmpegCapture.VideoCap.fromCam(camera,width,height,framerate,preset)
+        return ffmpegCapture.VideoCap.fromCam(camera,width,height,framerate,preset).dict()
 def setColor(p,color):
     if(type(p)!=Player):
         p=getPlayer(p)

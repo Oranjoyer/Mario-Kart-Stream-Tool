@@ -61,7 +61,7 @@ async function loadCameras()
         
     }
 }
-async function setupPage()
+async function loadCapturePage()
 {
     loadCameras()
     setPlaceholderPort()
@@ -130,5 +130,6 @@ document.getElementById("pickVideoFile").addEventListener("click",()=>{
 })
 document.getElementById("startCapture").addEventListener("click",startCapture)
 document.getElementById("selectInstance").addEventListener("click",()=>selectCapture(document.getElementById("selectCapture").value))
-setupPage()
+loadCapturePage()
+
 }

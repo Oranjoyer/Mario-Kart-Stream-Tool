@@ -122,9 +122,9 @@ class Player:
             toExport["preRaceInfo"] = isExportable(self.preRaceInfo)
         if(self.currentRace):
             toExport["currentRace"] = isExportable(self.currentRace)
-
+        return toExport
     def dict(self):
-        self.exportData()
+        return self.exportData()
     def exportToFile(self,path="./"):
         pass
 def isExportable(obj):

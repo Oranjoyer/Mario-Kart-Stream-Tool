@@ -29,7 +29,7 @@ app.whenReady().then(()=>{
     ipcMain.handle("getPlayers",()=>{return pyInterface.invokeRequest("getPlayers")})
     ipcMain.handle("createPlayer",(_event,name,camera)=>{return pyInterface.invokeRequest("createPlayer",[name,camera])})
     ipcMain.on("setColor",(player,color)=>{pyInterface.makeRequest("setColor",null,[player,color])})
-    ipcMain.handle("getCapDetails",(_group,id)=>{return pyInterface.invokeRequest("getCapDetails",id)})
+    ipcMain.handle("getCapDetails",(_group,id)=>{return pyInterface.invokeRequest("getCapDetails",[id])})
     ipcMain.handle("getDefPort",()=>{return pyInterface.invokeRequest("currentPort")})
     ipcMain.handle("getOpenCams",()=>{return pyInterface.invokeRequest("getOpenCams")})
     createWindow()

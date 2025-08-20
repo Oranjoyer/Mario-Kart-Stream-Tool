@@ -6,6 +6,7 @@ import messenger
 import cv2
 from numpy import sqrt
 from itemChecking import checkItems
+import json
 
 ITEM_STATIC_COUNT = 5
 PLACE_STATIC_COUNT = 5
@@ -227,6 +228,8 @@ class Race:
                         "items":self.items,
                     }
                 )
+    def toJson(self):
+        return json.dumps(self.dict())
     def dict(self):
         temp = self.__dict__.copy()
         if(self.info!=None):
