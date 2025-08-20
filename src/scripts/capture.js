@@ -1,19 +1,42 @@
 {
-let capSelected = false
 // function loadCapture(capId)
 // {
 //     window.electronAPI.getCapFromId(capId)
 // }
 async function selectCapture(id) {
-    capture = window.electronAPI.getCapDetails(id)
+    let capture = await window.electronAPI.getCapDetails(id)
+    console.log(capture)
+
+    let form = document.forms["capForm"]
+
 
     document.getElementById("selectCapture").value = id
+    document.getElementById("cameraSelect").value = "unchanged"
 
     // document.getElementById("name") = capture.name
-    document.getElementById("heightRes") = capture.height
-    document.getElementById("widthRes") = capture.width
-    document.getElementById("fps") = capture.framerate
-    document.getElementById("port") = capture.port
+    form.height.value = capture.height
+    form.width.value = capture.width
+    form.framerate.value = capture.framerate
+    form.port.value = capture.port
+
+    if(capture.proc != null)
+    {
+        setActive(true)
+    }
+
+}
+function getFormElem(form,id){
+    return form.getElementById(id)
+}
+function setActive(opt) {
+    if(opt){
+    document.getElementById("startCapture").display = "block"
+    document.getElementById("stopCapture").display = "none"
+    return
+    }
+    
+    document.getElementById("startCapture").display = "none"
+    document.getElementById("stopCapture").display = "block"
 
 }
 
@@ -23,6 +46,12 @@ async function loadCameras()
     let cams = await window.electronAPI.getOpenCams()
     console.log(cams)
     camBox.innerHTML = ""
+    {
+    let option = document.createElement("option")
+        option.value = "unchanged";
+        option.innerHTML = "Unchanged";
+        camBox.appendChild(option)
+    }
     for(let i = 0; i < cams.length;i++)
     {
         let option = document.createElement("option")
@@ -39,12 +68,20 @@ async function setupPage()
     loadCaptureList()
 
 }
+
 async function startCapture()
 {
-    if(capSelected)
+    if(document.getElementById("selectCapture").value != "new")
     {
+        let form = document.getElementById("capForm")
+        let attr = {height:form["height"],width:form["width"],framerate:form["framerate"]}
+        if(document.getElementById("cameraSelect").value!="unchanged")
+            attr.camera = document.getElementById("cameraSelect").value
+        window.electronAPI.modifyCapture(document.getElementById("capForm").value,attr)
         return
     }
+    if(document.getElementById("cameraSelect").value=="unchanged")
+        return
     let camera = document.getElementById("cameraSelect").value
     console.log(camera)
     let height = document.getElementById("heightRes").value
@@ -52,7 +89,7 @@ async function startCapture()
     let port = document.getElementById("port").value
     let fps = document.getElementById("fps").value
 
-    window.electronAPI.createCapture(camera,height,width,fps,port).then((cap)=>{loadCaptureList();loadCameras();selectCapture(cap.id)})
+    window.electronAPI.createCapture(camera,width,height,fps,port).then((cap)=>{loadCaptureList();loadCameras();selectCapture(cap.id)})
     
 }
 async function loadCaptureList() {
@@ -60,6 +97,12 @@ async function loadCaptureList() {
     let caps = await window.electronAPI.getCaptures()
     console.log(caps)
     capBox.innerHTML = ""
+    {
+        let option = document.createElement("option")
+        option.value = "new"
+        option.innerHTML = "New Capture"
+        capBox.appendChild(option)
+    }
     for(let i = 0; i < caps.length;i++)
     {
         let option = document.createElement("option")
@@ -81,11 +124,11 @@ document.getElementById("pickVideoFile").addEventListener("click",()=>{
             elem.value = file.filePaths[0]
             elem.innerText = file.filePaths[0]
             camBox.appendChild(elem)
-
         }
 
     })
 })
 document.getElementById("startCapture").addEventListener("click",startCapture)
+document.getElementById("selectInstance").addEventListener("click",()=>selectCapture(document.getElementById("selectCapture").value))
 setupPage()
 }

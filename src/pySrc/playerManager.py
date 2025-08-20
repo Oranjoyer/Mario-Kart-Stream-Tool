@@ -95,25 +95,36 @@ class Player:
                 self.lastPlayerCheck = 0,None
             elif(len(players)!=self.lastPlayerCheck[1]):
                 self.lastPlayerCheck = frameNum, len(players)
+    # def exportData(self):
+    #     return {
+    #         "id": self.id,
+    #         "capture": self.capture.id,
+    #         "name": self.name,
+    #         "splitNum": self.splitscreenNum,
+    #         "character": self.character,
+    #         "kart": self.kart,
+    #         "wheels":self.wheels,
+    #         "glider": self.glider,
+    #         "worldChar": self.worldCharacter,
+    #         "worldKart": self.worldKart,
+    #         "activity": self.currentActivity,
+    #         "preRaceInfo": isExportable(self.preRaceInfo),
+    #         "currentRace": isExportable(self.currentRace),
+    #         "colorAdj": self.colorAdj,
+    #         "finished": self.finished,
+    #         "place": self.place
+    #     }
     def exportData(self):
-        return {
-            "id": self.id,
-            "capture": self.capture.id,
-            "name": self.name,
-            "splitNum": self.splitscreenNum,
-            "character": self.character,
-            "kart": self.kart,
-            "wheels":self.wheels,
-            "glider": self.glider,
-            "worldChar": self.worldCharacter,
-            "worldKart": self.worldKart,
-            "activity": self.currentActivity,
-            "preRaceInfo": isExportable(self.preRaceInfo),
-            "currentRace": isExportable(self.currentRace),
-            "colorAdj": self.colorAdj,
-            "finished": self.finished,
-            "place": self.place
-        }
+        toExport = self.__dict__.copy()
+        if(self.capture):
+            toExport["capture"] = self.capture.id
+        if(self.preRaceInfo):
+            toExport["preRaceInfo"] = isExportable(self.preRaceInfo)
+        if(self.currentRace):
+            toExport["currentRace"] = isExportable(self.currentRace)
+
+    def dict(self):
+        self.exportData()
     def exportToFile(self,path="./"):
         pass
 def isExportable(obj):

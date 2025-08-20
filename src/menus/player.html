@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
     <template pageName='Player Manager' listPage='true'>
+        <script src="scripts/player.js"></script>
         <div>Name: <input type="text" id="name"></div>
         <select id="selectPlayer"></select>
-        <select id="inputDevice"></select>
-        <button id="startCapture" title="Start Broadcasting" >Start Broadcasting</button>
+        <select id="selectCapture"></select>
+        <button id="enablePlayer" title="Enable Player">Start Broadcasting</button>
+        <button id="removePlayer" title="Delete Player">Delete Player</button>
     </template>
 </html>

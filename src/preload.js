@@ -8,7 +8,7 @@ contextBridge.exposeInMainWorld('versions',{
 })
 
 contextBridge.exposeInMainWorld('electronAPI',{
-    getPlayerList: () => ipcRenderer.send("getPlayers"),
+    getPlayers: () => ipcRenderer.invoke("getPlayers"),
     createPlayer: (name,capture) => ipcRenderer.invoke("createPlayer",name,capture),
     modifyPlayer: (id,attributes)=>  ipcRenderer.send("modifyPlayer",id,attributes),
     removePlayer: (id)=> ipcRenderer.send("removePlayer",id),

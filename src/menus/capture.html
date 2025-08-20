@@ -9,16 +9,17 @@
         <button id="pickVideoFile" style="display: block;">Pick File</button>
         <!-- <div>Name:</div>
         <input type="text" id="name"> -->
+        <form id="capForm">
         <div>Height:</div>
-        <input type="text" id="heightRes" value="1080">
+        <input type="text" id="heightRes" name="height" value="1080">
         <div>Width:</div>
-        <input type="text" id="widthRes" value="1920">
+        <input type="text" id="widthRes" name="width" value="1920">
         <div>Framerate:</div>
-        <input type="text" id="fps" value="60">
+        <input type="text" id="fps" name="framerate" value="60">
         <div>Port:</div>
-        <input type="text" id="port" placeholder="21732">
-        
-        <select id="inputDevice"></select>
-        <button id="startCapture">Start Capture</button>
+        <input type="text" id="port" name="port" placeholder="21732">
+    </form>
+        <button id="startCapture" name="startCapture">Start Capture</button>
+        <button id="stopCapture" name="stopCapture" style="display: none;">Stop Capture</button>
         </template>
 </html>

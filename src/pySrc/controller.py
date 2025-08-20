@@ -15,11 +15,12 @@ import signal
 import typing
 
 
+
 last_pulse = -1
 THREAD_LIST=[]
 PORT_OPT = "port="
 PORT = 52402
-PLAYERS = []
+PLAYERS = {}
 CAPTURE_SOURCES=[]
 MAX_UPDATE_RATE=-1
 GLOBAL_SIGNAL=threading.Event()
@@ -37,7 +38,7 @@ def startThread(target,args=[]):
         thread.start()
 def startProcessing():
         GLOBAL_SIGNAL.set()
-        threading.Thread(target=lambda: apiService.startApi(PLAYERS,CAPTURE_SOURCES,GLOBAL_SIGNAL)).start()
+        threading.Thread(target=lambda: apiService.startApi(PLAYERS.values(),CAPTURE_SOURCES,GLOBAL_SIGNAL)).start()
         startThread(target=capLoop)
         startThread(target=playerLoop)
 def mainInit():
@@ -61,7 +62,7 @@ def capLoop():
             continue
         maxFPS = max([cap.framerate for cap in CAP_LIST.values()])
         start = time.time()
-        for cap in CAP_LIST.values():
+        for cap in tuple(CAP_LIST.values()):
             if(not (cap.camera.method == 0 and playerManager.SELF_UPDATE)):
                 cap.updateImage()
         time.sleep(max(0,1/(maxFPS+1)-(time.time()-start)))
@@ -81,7 +82,7 @@ def getCaptures():
 def capFromId(id):
         return ffmpegCapture.capFromId(id)
 def getCapDetails(id):
-    return capFromId.dict()
+    return capFromId(int(id)).dict()
 def camFromId(id):
     cams = getListing()
     if(id>len(cams)or id<0):
@@ -102,19 +103,19 @@ def createPlayer(name,capture=None):
     if(type(capture)!= ffmpegCapture.VideoCap):
         capture=ffmpegCapture.capFromId(capture)
     player = Player(name,capture)
-    PLAYERS.append(player)
+    PLAYERS[player.id] = player
     if(capture):
         sendMessage("Info",f"Player \'{name}\' created on capture \'{capture.name}\'")
     else:
         sendMessage("Info",f"Player \'{name}\' created without assigned capture device")
     return player
 
+def getPlayers():
+    return [p.dict() for p in PLAYERS.values()]
 def removePlayer(id):
     return PLAYERS.pop(id)
 def getPlayer(id):
-    if(id >=0 and id<len(PLAYERS)):
-        return PLAYERS[id]
-    return None
+    return PLAYERS.get(id)
 def modifyPlayer(id,attrDict):
     player = getPlayer(id)
     if(not player):
@@ -158,6 +159,12 @@ def setColor(p,color):
     p.colorAdj = color
     
 def modifyCapture(id,attrDict):
+    id=int(id)
+    for key, value in attrDict.items():
+        try:
+            attrDict["key"] = int(value)
+        except:
+            pass
     cap = capFromId(id)
     if(not cap):
         return
@@ -177,7 +184,7 @@ def setUpdateRate(rate):
 def updatePlayers(players=PLAYERS):
         # return map(Player.updateStatus,players)
         # [Player.updateStatus(p) for p in players]
-        [p.updateStatus() for p in PLAYERS]
+        [p.updateStatus() for p in PLAYERS.values()]
 
 def setPlayerCapture(player,capture):
     if(type(capture)!= ffmpegCapture.VideoCap):
