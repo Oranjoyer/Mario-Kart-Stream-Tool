@@ -1,4 +1,3 @@
-
 var playerList = []
 var cameraList = []
 var pageContents;
@@ -24,6 +23,16 @@ async function indexPages(){
                 console.log(ret)
                 let parsed = parser.parseFromString(ret,"text/html").getElementsByTagName("template")[0]
                 let pageName = parsed.getAttribute("pageName")
+                console.log(parsed.getAttribute("listPage"))
+            if(parsed.getAttribute("listPage")=="true"){
+                let link = document.createElement("button");
+                link.addEventListener("click",()=>{
+                    loadPage(pageName)
+                })
+                link.innerHTML = pageName
+                link.className = "toolbarButton"
+                document.getElementById("toolbar").appendChild(link)
+            }
                 pages[pageName] = parsed
                 console.log(parsed)
         }

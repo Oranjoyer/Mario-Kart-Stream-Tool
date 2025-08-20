@@ -1,4 +1,5 @@
 import os
+import sys
 import messenger as logManager
 import cv2
 import csv
@@ -17,7 +18,9 @@ RACE_DATA_FOLDER = "raceData"
 IMAGE_EXTENSIONS=(".jpg",".gif",".png",".tiff",".svg")
 CSV_EXT = ".csv"
 PLAINTEXT_EXT = (".txt",".json",".ini",".cfg",".js",".htm",".html")
-BASE_PATH="./"
+BASE_PATH=os.getcwd()
+if(getattr(sys,"frozen",False)and hasattr(sys,"_MEIPASS")):
+    BASE_PATH = sys._MEIPASS
 ZIP_EXT = ".zip"
 fileList = []
 # Class That Stores Data associated with a file. Formats as the proper filetype 
@@ -51,6 +54,7 @@ def sendMessage(type,message):
 # Loads file into memory or retrieves file from list; returns file
 def loadFile(filePath,name):
     # sendMessage("Info", "Checking for preloaded files; disregard 2 potential error messages")
+    filePath = os.path.join(BASE_PATH,filePath)
     nameFile = getFileByName(name,True)
     pathFile = getFileByPath(filePath,True)
     fileType = "Bytes"
@@ -80,7 +84,7 @@ def loadFile(filePath,name):
         sendMessage("Error",f"Insufficient permissions to load file at path \'{filePath}\' returning null value instead of loading file")
         return None
         # break
-    loadedFile = FileContainer(name,open(filePath, "rb"),filePath,fileType)
+    loadedFile = FileContainer(name,open(os.path.join(BASE_PATH,filePath), "rb"),filePath,fileType)
     sendMessage("Debug",f"Successfuly loaded file \'{name}\' at \'{filePath}\'")
     fileList.append(loadedFile)
     return loadedFile

@@ -7,7 +7,7 @@ import json
 import mimetypes
 import cv2
 import os
-
+import sys
 PLAYERS = []
 CAPTURES = []
 IP = "127.0.0.1"
@@ -46,7 +46,10 @@ async def getOverlayFromZip(overlay,path):
 async def getOverlay(overlay,path):
     if(overlay[-len(".zip"):]==".zip"):
         return await getOverlayFromZip(overlay,path)
-    with open(f"Overlays/{overlay}/{path}", 'rb') as f:
+    overlayPath = f"./Overlays/{overlay}/{path}"
+    if(not hasattr(sys,"_MEIPASS")):
+        overlayPath = os.path.join("./../",overlayPath)
+    with open(os.path.join(fileService.BASE_PATH,overlayPath), 'rb') as f:
         return f.read(), 200, {'Content-Type': mimetypes.guess_type(path)}
 
 def startApi(players, captures, event_signal, ip=IP,port=PORT):

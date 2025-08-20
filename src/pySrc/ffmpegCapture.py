@@ -3,11 +3,12 @@ import numpy as np
 import threading
 import os
 import messenger
-from cameraSystem import NULL_METHOD,V4L2,DSHOW,FILE
+from cameraSystem import NULL_METHOD,V4L2,DSHOW,FILE,CAM_LIST
 from globals import FFMPEG_BINARY
+import json
 DEF_PORT = 21732
 FLUSH_LIMIT_FAC = 5
-CAP_LIST = []
+CAP_LIST = {}
 ID_VALUES = 0
 #["ffmpeg","-video_size",f"{wid}x{height}","-framerate",f"{framerate}","-i","/dev/video0","-vcodec","rawvideo","-an","-sn","-pix_fmt","bgr24","-f","image2pipe","-","-vcodec","libx264","-f","mpegts","udp://localhost:21623"]
 FFMPEG_VAAPI = (("-vaapi_device","/dev/dri/renderD128"),("-vf","format=nv12,hwupload","-vcodec","h264_vaapi"))
@@ -76,7 +77,9 @@ class VideoCap:
         self.currentImage = None
         self.currentFrame = 0
         self.active = False
-        CAP_LIST.append(self)
+        self.addToList()
+        self.activateSource(self.port)
+        # CAP_LIST.append(self)
 
     def getArgs(self):
         # if(os.name == "nt"):
@@ -100,8 +103,8 @@ class VideoCap:
         if(self.camera.method != FILE):
             threading.Thread(target=self.updateSelf).start()
         sendMessage("Info",f"Capture Source \'{self.name}\' activated")
-        if(self not in CAP_LIST):
-            CAP_LIST.append(self)
+    def addToList(self):
+        CAP_LIST[self.id] = self
     def updateSelf(self):
         while self.active:
             self.updateImage()
@@ -111,7 +114,7 @@ class VideoCap:
             return
         self.proc.terminate()
         self.proc = None
-        CAP_LIST.remove(self)
+        # CAP_LIST.remove(self)
     def updateImage(self):
         if(self.proc == None):
             sendMessage("Error",f"Capture Source \'{self.name}\' deactivated. Unable to update Image")
@@ -128,9 +131,13 @@ class VideoCap:
     def dict(self):
         temp = self.__dict__.copy()
         if(self.camera):
-            temp["camera"] = self.camera.id
+            temp["camera"] = self.camera.identifier()
         temp.pop("currentImage")
+        if(self.proc):
+            temp["proc"] = self.proc.pid
         return temp
+    def __str__(self):
+        return json.dumps(self.dict())
     def getImage(self):
         return self.currentImage
 

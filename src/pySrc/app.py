@@ -6,26 +6,33 @@ import controller
 import threading
 import messenger
 import time
-MAX_UPDATE_RATE = 5
+import traceback
+import queue
+MAX_UPDATE_RATE = -1
 def sendMessage(type="Info",content=""):
     messenger.sendMessage(type,"ApplicationLink",content)
 
-inputQueue=[]
+inputQueue=queue.Queue()
 dataStart = ":CMDSTART:"
 dataEnd = ":CMDEND:"
 def main():
     controller.startThread(controller.pulseCheck,[5])
     isReady()
     while (__name__=="__main__") or controller.GLOBAL_SIGNAL.is_set():
-        for line in sys.stdin:
+        # for line in sys.stdin:
+        line = sys.stdin.readline()
+        [inputQueue.put(st) for st in line.split("\n")]
+        while not inputQueue.empty():
+            input = inputQueue.get()
             try:
-                readData(line)
+                readData(input)
             except Exception as e:
-                sendMessage("Error",f"Invalid Request Made Error\nException: {e}")
+                sendMessage("Error",f"Invalid Request Made Error\nException: {e}\nTraceback: {traceback.format_exc()}")
         start = time.time()
-        time.sleep(max(0,1/(MAX_UPDATE_RATE)-(time.time()-start)))
+        if(MAX_UPDATE_RATE!=-1):
+            time.sleep(max(0,1/(MAX_UPDATE_RATE)-(time.time()-start)))
         framerate = 1/(time.time()-start+0.0001)
-
+        
 def receiveData():
     return sys.stdin.readline()
 def readData(data=None):

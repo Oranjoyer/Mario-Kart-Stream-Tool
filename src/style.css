@@ -1,7 +1,17 @@
+@font-face {
+    font-family: BaiJam;
+    src: url(./assets/font/BaiJam.ttf);
+}
+
 body{
     background-color: #393431;
     padding-top: 40px;
     margin-bottom: 20px;
+    color: white;
+    font-family: BaiJam;
+}
+input,button,select{
+    font-family: BaiJam;
 }
 input[type='number']{
     background-color: #6e655e;
@@ -12,7 +22,10 @@ input[type='range']{
     width: 100px;
     accent-color: #c86311;
 }
-
+button,input[type='button']{
+    background-color:#c86311;
+    color: rgb(255, 255, 255);
+}
 .bottomAlign{
     display: flex;
     position:absolute;
@@ -35,9 +48,12 @@ input[type='range']{
 .toolbarButton{
     background-color:#c86311;
     color:white;
-    height: max-content;
+    flex: 1;
     min-width: 100px;
-    max-width: fit-content;
+    font-weight: bold;
+    border-width: 5px;
+    border-color:#382a1f;
+    border-style: double;
 }
 .toolbarButton:hover{
     background-color: #ae5c19;

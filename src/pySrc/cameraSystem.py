@@ -54,6 +54,12 @@ class cameraDetails:
         self.aliases = aliases
     def __str__(self):
         return self.name
+    def identifier(self):
+        id = None
+        if(self in CAM_LIST):
+            id = CAM_LIST.index(self)
+        aliases = self.aliases
+        return {"id":id,"aliases":aliases}
     def fromFile(path):
         method=FILE
         name = path

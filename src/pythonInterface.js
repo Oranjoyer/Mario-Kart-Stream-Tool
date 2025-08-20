@@ -8,6 +8,7 @@ const { Readline } = require('node:readline/promises');
 const { time } = require('node:console');
 const path = require('node:path')
 
+let sendQueue = []
 var pyServer;
 
 let pyFunc = {};
@@ -39,18 +40,21 @@ function fulfillRequests(receivedResponse)
     {
         let req = requestQueue[i]
         if(receivedResponse.requestId==req.id)
-        {
-            requestQueue.splice(i,1)
-            req.callback(receivedResponse.response)
+            {
+                requestQueue.splice(i,1)
+                req.callback(receivedResponse.response)
+            }
         }
-    }
+        // console.log("---")
 }
 
 async function init(callback=null)
 {
+    // setInterval(releaseData,1000*(1/2))
     let prom = new Promise((resolve)=>{
     initialized.then((res)=>{
         setInterval(pulse,2500)
+        
         // pythonFunctionSystem(res)
         // pyFunc.heartbeat().then(console.log)
         if(callback)
@@ -71,9 +75,15 @@ function makeRequest(functionName,callback,args=[])
     let requestId = -1
     if(callback!=null)
     {
-        requestId=currentReqNo
-        currentReqNo+=1
-        if(currentReqNo>9000000)
+        requestId = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER)
+        for(let r of requestQueue)
+        {
+            if(requestId==r.requestId)
+            {
+                requestId=++currentReqNo
+            }
+        }
+        if(currentReqNo>=Number.MAX_SAFE_INTEGER)
             currentReqNo = 0
     }
     if(requestId!=-1)
@@ -94,8 +104,21 @@ function sendData(data)
         return
     }
     data = Buffer.from(data).toString("base64");
-    pyServer.stdin.write(dataStart+data+dataEnd+"\n");
+    pyServer.stdin.write("\n"+dataStart+data+dataEnd+"\n");
+    // sendQueue.push(data)
+    
+
 }
+// function releaseData()
+// {
+//     if(pyServer==null)
+//         return
+//     if(sendQueue.length!=0 && pyServer != null)
+//     {
+//         let data = sendQueue.pop()
+//         pyServer.stdin.write("\n"+dataStart+data+dataEnd+"\n");
+//     }
+// }
 function getDataBounds(data)
 {
     let start = data.indexOf(dataStart) +dataStart.length;
@@ -110,7 +133,7 @@ function decodeData(data)
     data = data.substring(bounds[0],bounds[1]);
     return Buffer.from(data, 'base64').toString('utf8');
 }
-function readData(recData)
+async function readData(recData)
 {
     // let recData = pyServer.stdin.read()
     if(recData==null)
@@ -149,17 +172,19 @@ function spawnServer()
 {
     if(pyServer!=null)
         return
-    console.log(path.join(__dirname,"pySrc",'app.py'))
-    pyServer = spawn("python", [path.join(__dirname,"pySrc",'app.py')])
+    // console.log(path.join(__dirname,"pySrc",'app.py'))
+    pyServer = spawn("python", [path.join(__dirname,"pySrc",'app.py')],{cwd:__dirname,env:process.env})
     // pyServer.stdin.setEncoding('utf-8')
     pyServer.stdout.on("data",(data)=>{
-        data = Buffer.from(data).toString()
+        // console.log(data)
+        let dataArr = Buffer.from(data).toString().split("\n")
         // log(data)
-        readData(data)
+        for(let dt of dataArr)
+            readData(dt)
     })
     pyServer.stderr.on("data",(data)=>{
         data = Buffer.from(data).toString()
-        // log(data)
+        log(data)
     })
 }
 function pythonFunctionSystem(functions){
@@ -218,6 +243,6 @@ function shutdown()
 // {
 //     sendCommand("heartbeat")
 // }
-module.exports = {init,sendCommand,makeRequest,shutdown}
+module.exports = {init,sendCommand,makeRequest,shutdown,invokeRequest}
 
 

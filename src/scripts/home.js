@@ -5,7 +5,6 @@ var colorPrev;
 var hueRotationInput;
 
 console.log("Page")
-document.addEventListener("DOMContentLoaded",()=>{
     console.log("PageIsHere")
     colorPrev = document.getElementById("colorModPreview")
     document.getElementById("hueRotationIn").addEventListener("change",()=>{hueRotate=document.getElementById("hueRotationIn").value;colorAdjustment(colorPrev,hueRotate,saturation,brightness)})
@@ -17,13 +16,19 @@ document.addEventListener("DOMContentLoaded",()=>{
     document.getElementById("lightnessIn").addEventListener("change",()=>{brightness=document.getElementById("lightnessIn").value;colorAdjustment(colorPrev,hueRotate,saturation,brightness)})
     document.getElementById("lightnessSlider").addEventListener("change",()=>{brightness=document.getElementById("lightnessSlider").value;colorAdjustment(colorPrev,hueRotate,saturation,brightness)})
 
-    
-})
-
 
 function colorAdjustment(imageElement,H,S,L)
 {
     imageElement.style.filter ="hue-rotate("+H+"deg) saturate("+S+"%) brightness("+L+"%)";
 
     return imageElement
+}
+
+function setPlayerColor()
+{
+    let hue = document.getElementById("hueRotationIn").value
+    let saturation = document.getElementById("saturationIn").value
+    let brightness = document.getElementById("brightnessIn").value
+
+    window.electronAPI.setColor([null,{H:hue,S:saturation,L:brightness}]);
 }

@@ -12,6 +12,7 @@ import time
 import messenger
 import os
 import signal
+import typing
 
 
 last_pulse = -1
@@ -56,11 +57,11 @@ def playerLoop():
         framerate = 1/(time.time()-start+0.0001)
 def capLoop():
     while GLOBAL_SIGNAL.is_set():
-        if(len(CAP_LIST)==0):
+        if(len(CAP_LIST.values())==0):
             continue
-        maxFPS = max([cap.framerate for cap in CAP_LIST])
+        maxFPS = max([cap.framerate for cap in CAP_LIST.values()])
         start = time.time()
-        for cap in CAP_LIST:
+        for cap in CAP_LIST.values():
             if(not (cap.camera.method == 0 and playerManager.SELF_UPDATE)):
                 cap.updateImage()
         time.sleep(max(0,1/(maxFPS+1)-(time.time()-start)))
@@ -71,17 +72,25 @@ def stopProcessing():
 def sendMessage(type,content):
     messenger.sendMessage(type,"SystemController",content)
 
-
+def currentPort():
+    return ffmpegCapture.DEF_PORT
+def getFreeCaptures():
+    return [[cap.name,cap.id] for cap in CAP_LIST.values() if cap not in [p.capture for p in PLAYERS]]
+def getCaptures():
+    return [[cap.name,cap.id] for cap in CAP_LIST.values()]
 def capFromId(id):
         return ffmpegCapture.capFromId(id)
-
+def getCapDetails(id):
+    return capFromId.dict()
 def camFromId(id):
     cams = getListing()
     if(id>len(cams)or id<0):
         return
     return cams[id]
 def getCams():
-    return [c.name for c in getListing()]
+    return [{"id":c[0], "name":c[1].name} for c in enumerate(getListing())]
+def getOpenCams():
+    return [c for c in getCams() if not camFromId(c["id"]) in [cap.camera for cap in CAP_LIST.values()]]
 def loadPlayer(capture,playerFile):
     if(type(capture)!= ffmpegCapture.VideoCap):
         capture=ffmpegCapture.capFromId(capture)
@@ -116,16 +125,38 @@ def modifyPlayer(id,attrDict):
         if(key == "capture" and type(value)!=ffmpegCapture.VideoCap):
             value = capFromId(value)
         setattr(player,key,value)
-def createCapture(camera,width=1280,height=720,framerate=60,preset="ultrafast"):
+def createCapture(camera,width:int=1280,height:int=720,framerate:int=60,port=None,preset="ultrafast"):
+    sendMessage("Info",CAP_LIST)
+    sendMessage("Info",[camera,width,height,framerate])
+    width = int(width)
+    height = int(height)
+    framerate = int(framerate)
+    if(port==""):
+        framerate = None
+    elif(type(port)==str):
+        framerate = int(framerate)
+    sendMessage("Info",camera)
     sendMessage("Info",type(camera))
     if(type(camera)==cameraDetails):
         pass
-    elif(type(camera)==str):
-        camera = cameraDetails.fromFile(camera)
-    elif(type(camera)==int):
-        camera = camFromId(camera)
+    else:
+        try:
+            camera = camFromId(int(camera))
+        except:
+            if(type(camera)==str):
+                camera = cameraDetails.fromFile(camera)
+    if(camera not in [camFromId(c["id"]) for c in getOpenCams()]):
+        return
     if(camera):
         return ffmpegCapture.VideoCap.fromCam(camera,width,height,framerate,preset)
+def setColor(p,color):
+    if(type(p)!=Player):
+        p=getPlayer(p)
+    if(not p):
+        [p.setattr("colorAdj",p) for p in PLAYERS]
+        return
+    p.colorAdj = color
+    
 def modifyCapture(id,attrDict):
     cap = capFromId(id)
     if(not cap):

@@ -13,9 +13,15 @@ contextBridge.exposeInMainWorld('electronAPI',{
     modifyPlayer: (id,attributes)=>  ipcRenderer.send("modifyPlayer",id,attributes),
     removePlayer: (id)=> ipcRenderer.send("removePlayer",id),
     getCams: () => ipcRenderer.invoke("getCams"),
-    getCapList: () => ipcRenderer.invoke("getCapList"),
-    createCapture: (camera,width,height,framerate,preset="ultrafast") => ipcRenderer.send("createCapture",camera,width,height,framerate,preset),
+    getCaptures: () => ipcRenderer.invoke("getCaptures"),
+    getFreeCaps: () => ipcRenderer.invoke("getFreeCaps"),
+    createCapture: (camera,width,height,framerate,preset="ultrafast") => ipcRenderer.invoke("createCapture",camera,width,height,framerate,preset),
     modifyCapture: (id,attributes) => ipcRenderer.send("modifyCapture",id,attributes),
+    getCapDetails: (id) => ipcRenderer.invoke("getCapDetails",id),
     getMenu: (path) => ipcRenderer.invoke("getMenu",path),
-    log: (mess) => ipcRenderer.send("log",mess)
+    log: (mess) => ipcRenderer.send("log",mess),
+    pickFile: ()=> ipcRenderer.invoke("pickFile"),
+    setColor: (player,color)=>ipcRenderer.send("setColor",player,color),
+    getDefPort: ()=> ipcRenderer.invoke("getDefPort"),
+    getOpenCams: ()=> ipcRenderer.invoke("getOpenCams")
 })

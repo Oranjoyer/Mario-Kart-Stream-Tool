@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html>
-    <template noShow='true' pageName="Capture Info">
+    <template listPage='true' pageName="Capture Manager">
+        <script src="scripts/capture.js"></script>
         <img id="capturePreview">
+        <select id="selectCapture"></select><button id="selectInstance" style="display: inline-block;">Select</button>
+        <div>Camera:</div>
+        <select id="cameraSelect"></select>
+        <button id="pickVideoFile" style="display: block;">Pick File</button>
+        <!-- <div>Name:</div>
+        <input type="text" id="name"> -->
         <div>Height:</div>
-        <input type="text" id="heightRes">
+        <input type="text" id="heightRes" value="1080">
         <div>Width:</div>
-        <input type="text" id="widthRes">
+        <input type="text" id="widthRes" value="1920">
+        <div>Framerate:</div>
+        <input type="text" id="fps" value="60">
         <div>Port:</div>
         <input type="text" id="port" placeholder="21732">
         
         <select id="inputDevice"></select>
-        <button id="startCapture" title="Start Broadcasting">
+        <button id="startCapture">Start Capture</button>
         </template>
 </html>
