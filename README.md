@@ -1,4 +1,4 @@
-#Mario Kart Stream Tool
+# Mario Kart Stream Tool
 
 Tool designed to enchance Mario Kart Streaming and Overlays
 
@@ -16,4 +16,5 @@ uvicorn
 quart
 numpy
 
+Overlays Will Work through zip files in a modules folder
 Release Date: IDK
