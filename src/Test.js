@@ -9,7 +9,7 @@ interface.makeRequest("foo",function(){
 })
 console.log("starting")
 interface.makeRequest("getCams",console.log)
-interface.sendCommand("createCapture",["mkVid.mkv"])
+interface.sendCommand("createCapture",["../mkVid.mkv"])
 interface.sendCommand("createPlayer",["Red",0])
 interface.sendCommand("modifyPlayer",[0,{"colorAdj":{"H":0,"S":100,"L":100}}])
 interface.sendCommand("createPlayer",["White",0])

@@ -1,4 +1,4 @@
 Overlays/*
 .kartVenv
 *.mkv
-node-modules
+node_modules

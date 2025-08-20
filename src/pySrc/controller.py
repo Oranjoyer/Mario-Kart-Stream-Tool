@@ -145,7 +145,7 @@ def createCapture(camera,width:int=1280,height:int=720,framerate:int=60,port=Non
         except:
             if(type(camera)==str):
                 camera = cameraDetails.fromFile(camera)
-    if(camera not in [camFromId(c["id"]) for c in getOpenCams()]):
+    if(camera.method != cameraSystem.FILE and camera not in [camFromId(c["id"]) for c in getOpenCams()]):
         return
     if(camera):
         return ffmpegCapture.VideoCap.fromCam(camera,width,height,framerate,preset)

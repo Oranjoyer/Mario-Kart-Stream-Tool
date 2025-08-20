@@ -8,6 +8,7 @@ import mimetypes
 import cv2
 import os
 import sys
+import messenger
 PLAYERS = []
 CAPTURES = []
 IP = "127.0.0.1"
@@ -16,6 +17,8 @@ app = Quart(__name__)
 pid = 1
 eventLoop = None
 
+def sendMessage(type,content):
+    messenger.sendMessage(type,"APIService",content)
 
 
 

@@ -3,9 +3,13 @@ from raceManager import Race, RaceInfo
 from preRaceScan import checkTrack, scanPlayers, checkLoading
 from ffmpegCapture import VideoCap
 import ffmpegCapture
+import messenger
 import cv2
 
-SELF_UPDATE = 0
+def sendMessage(type,content):
+    messenger.sendMessage(type,"PlayerManager",content)
+
+SELF_UPDATE = 1
 ID_VALUES = 0
 class Player:
     def __init__(self,name,capture=None):

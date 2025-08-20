@@ -21,9 +21,7 @@ VAAPI = 1
 def sendMessage(type,content):
     messenger.sendMessage(type, "CaptureManager",content)
 def capFromId(id):
-    for cap in CAP_LIST:
-        if(cap.id == id):
-            return cap
+        return CAP_LIST.get(id)
 def parseArgs(source,sourceType,width,height,framerate,encoder,preset,port):
     args = [FFMPEG_BINARY]
     outputArgs2 = ["-f","mpegts",f"udp://localhost:{port}"]
